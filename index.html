@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Jamie's Hack Shack</title>
+<meta name="description" content="Hardware builds, retro computing, and maker chaos. Jamie's Hack Shack: Make. Break. Hack. Tinker. Learn. Share.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="hack-shack-rs.website.png">
+<style>
+  :root{
+    --bg:#1b201d;
+    --panel:#232a26;
+    --panel-line:#333d37;
+    --ink:#e8e6df;
+    --ink-dim:#9aa39c;
+    --pcb-green:#5a8f6b;
+    --copper:#b8804f;
+    --led:#e8a33d;
+    --led-glow: 0 0 8px rgba(232,163,61,.9), 0 0 18px rgba(232,163,61,.5);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(ellipse at top left, rgba(90,143,107,0.07), transparent 45%),
+      var(--bg);
+    color:var(--ink);
+    font-family:'IBM Plex Sans', sans-serif;
+    line-height:1.55;
+  }
+  a{color:var(--pcb-green);}
+  a:hover{color:var(--led);}
+  a:focus-visible, button:focus-visible{outline:2px solid var(--led); outline-offset:3px;}
+  .wrap{max-width:760px; margin:0 auto; padding:0 24px;}
+  .mono{font-family:'IBM Plex Mono', monospace;}
+
+  /* ---- header / nav ---- */
+  header{border-bottom:1px solid var(--panel-line); padding:18px 0;}
+  .navrow{display:flex; align-items:center; justify-content:space-between;}
+  .brandmark{display:flex; align-items:center; gap:10px; font-family:'IBM Plex Mono',monospace; font-weight:600; letter-spacing:.02em;}
+  .logo-mark{
+    height:26px; width:auto; flex:none;
+    filter:invert(1) brightness(.95) drop-shadow(0 0 1px rgba(0,0,0,.4));
+  }
+  .rs-logo-mark{
+    height:34px; width:auto; flex:none;
+    filter:drop-shadow(0 0 2px rgba(0,0,0,.35));
+  }
+  .led-dot{
+    width:9px; height:9px; border-radius:50%;
+    background:var(--led); box-shadow:var(--led-glow);
+    animation:blink 2.6s ease-in-out infinite;
+    flex:none;
+  }
+  @keyframes blink{
+    0%,100%{opacity:1;}
+    50%{opacity:.25; box-shadow:none;}
+  }
+  nav ul{list-style:none; display:flex; gap:22px; margin:0; padding:0; font-family:'IBM Plex Mono',monospace; font-size:.85rem;}
+  nav a{text-decoration:none; color:var(--ink-dim);}
+  nav a:hover{color:var(--led);}
+
+  /* ---- hero ---- */
+  .hero{padding:64px 0 40px; border-bottom:1px dashed var(--panel-line); position:relative;}
+  .hero > *{position:relative; z-index:1;}
+
+  /* ---- hero logo: "on a terminal screen" treatment ---- */
+  .screen{
+    display:inline-flex; align-items:center; justify-content:center;
+    padding:34px 40px; margin-bottom:28px;
+    background:radial-gradient(ellipse at center, rgba(232,163,61,.10), rgba(0,0,0,.35) 70%), #141815;
+    border:1px solid var(--panel-line); border-radius:8px;
+    box-shadow:inset 0 0 40px rgba(0,0,0,.6), inset 0 0 2px rgba(232,163,61,.2);
+    position:relative; overflow:hidden;
+  }
+  .screen::after{
+    content:''; position:absolute; inset:0; pointer-events:none;
+    background:repeating-linear-gradient(
+      to bottom, rgba(0,0,0,0) 0px, rgba(0,0,0,0) 2px,
+      rgba(0,0,0,.35) 3px, rgba(0,0,0,0) 4px
+    );
+    mix-blend-mode:multiply;
+  }
+  .hero-rs-logo{
+    height:150px; width:auto; display:block;
+    filter:drop-shadow(0 0 14px rgba(232,163,61,.25));
+    animation:flicker-in 1.1s steps(1,end) both;
+  }
+  @keyframes flicker-in{
+    0%{opacity:0;}
+    8%{opacity:1;}
+    12%{opacity:.2;}
+    18%{opacity:1;}
+    24%{opacity:.3;}
+    32%{opacity:1;}
+    100%{opacity:1;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .hero-rs-logo{animation:none; opacity:1;}
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace; font-size:.78rem; letter-spacing:.12em;
+    text-transform:uppercase; color:var(--copper); margin:0 0 14px;
+  }
+  h1{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:clamp(2rem, 5vw, 2.9rem);
+    line-height:1.12; margin:0 0 18px; font-weight:700;
+    letter-spacing:-0.01em;
+  }
+  .hero p{max-width:52ch; color:var(--ink-dim); font-size:1.05rem; margin:0 0 26px;}
+  .cta-row{display:flex; flex-wrap:wrap; gap:12px;}
+  .btn{
+    font-family:'IBM Plex Mono',monospace; font-size:.85rem; text-decoration:none;
+    padding:10px 16px; border:1px solid var(--panel-line); border-radius:3px;
+    color:var(--ink); transition:border-color .15s, color .15s;
+  }
+  .btn:hover{border-color:var(--led); color:var(--led);}
+  .btn.primary{background:var(--pcb-green); border-color:var(--pcb-green); color:#101410;}
+  .btn.primary:hover{background:var(--led); border-color:var(--led); color:#101410;}
+
+  /* ---- status strip: the signature element ---- */
+  .status{
+    margin-top:34px; padding:14px 16px; background:var(--panel);
+    border:1px solid var(--panel-line); border-radius:4px;
+    font-family:'IBM Plex Mono',monospace; font-size:.85rem;
+    display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;
+  }
+  .status .label{color:var(--ink-dim); text-transform:uppercase; letter-spacing:.08em; font-size:.72rem;}
+  .status .val{color:var(--led);}
+
+  /* ---- section shell ---- */
+  section{padding:52px 0;}
+  section + section{border-top:1px dashed var(--panel-line);}
+  .section-head{display:flex; align-items:baseline; justify-content:space-between; margin-bottom:26px; gap:16px;}
+  h2{font-family:'IBM Plex Mono',monospace; font-size:1.15rem; margin:0; letter-spacing:.02em;}
+  h2 .num{color:var(--copper); margin-right:8px;}
+  .section-head a{font-family:'IBM Plex Mono',monospace; font-size:.8rem; white-space:nowrap; text-decoration:none; color:var(--ink-dim);}
+  .section-head a:hover{color:var(--led);}
+
+  /* ---- build log: parts-list styled entries ---- */
+  .entry{
+    display:grid; grid-template-columns:70px 1fr auto; gap:16px; align-items:start;
+    padding:16px 0; border-bottom:1px solid var(--panel-line);
+  }
+  .entry:last-child{border-bottom:none;}
+  .refdes{font-family:'IBM Plex Mono',monospace; color:var(--pcb-green); font-weight:600; font-size:.9rem; padding-top:2px;}
+  .entry h3{margin:0 0 4px; font-size:1rem; font-weight:600;}
+  .entry p{margin:0; color:var(--ink-dim); font-size:.92rem;}
+  .entry .date{font-family:'IBM Plex Mono',monospace; font-size:.78rem; color:var(--ink-dim); white-space:nowrap; padding-top:2px;}
+  .tag{
+    display:inline-block; font-family:'IBM Plex Mono',monospace; font-size:.68rem;
+    color:var(--copper); border:1px solid var(--copper); border-radius:2px;
+    padding:1px 6px; margin-top:8px; letter-spacing:.04em;
+  }
+
+  /* ---- about strip ---- */
+  .about p{color:var(--ink-dim); max-width:62ch;}
+
+  /* ---- footer as connector panel ---- */
+  footer{padding:40px 0 60px;}
+  .ports{display:flex; flex-wrap:wrap; gap:10px; margin-bottom:22px;}
+  .port{
+    font-family:'IBM Plex Mono',monospace; font-size:.82rem; text-decoration:none;
+    color:var(--ink-dim); border:1px solid var(--panel-line); border-radius:3px;
+    padding:8px 12px; display:flex; align-items:center; gap:8px;
+  }
+  .port:hover{color:var(--led); border-color:var(--led);}
+  .port::before{content:'●'; font-size:.6rem; color:var(--pcb-green);}
+  .fine{font-family:'IBM Plex Mono',monospace; font-size:.75rem; color:var(--panel-line);}
+  .fine a{color:var(--panel-line);}
+
+  @media (max-width:560px){
+    .entry{grid-template-columns:1fr; gap:4px;}
+    .entry .date{order:-1;}
+    .hero-rs-logo{height:96px;}
+    .screen{padding:22px 26px;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .led-dot{animation:none; opacity:1;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap navrow">
+    <div class="brandmark"><img class="rs-logo-mark" src="hack-shack-rs.website.png" alt="Jamie's Hack Shack"><span class="led-dot" aria-hidden="true"></span></div>
+    <nav>
+      <ul>
+        <li><a href="#log">Build Log</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="https://www.youtube.com/@JamiesHackShack">YouTube</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <section class="hero">
+    <div class="screen">
+      <img class="hero-rs-logo" src="hack-shack-rs.website.png" alt="Jamie's Hack Shack">
+    </div>
+    <p class="eyebrow">// jamie's hack shack</p>
+    <h1>Make. Break.<br>Hack. Tinker.<br>Learn. Share.</h1>
+    <p>Hardware meets chaos, retro tech refuses to die. Electronics builds, vintage computing, and the occasional hack that probably shouldn't work but somehow does.</p>
+    <div class="cta-row">
+      <a class="btn primary" href="https://www.youtube.com/@JamiesHackShack">Watch on YouTube</a>
+      <a class="btn" href="#log">See the build log</a>
+    </div>
+
+    <div class="status">
+      <span class="label">On the bench</span>
+      <span class="val">HackerBox 0127: Sea Five, dual ESP32-C5 wardriving build</span>
+    </div>
+  </section>
+
+  <section id="log">
+    <div class="section-head">
+      <h2><span class="num">01</span>Build Log</h2>
+      <a href="https://www.youtube.com/@JamiesHackShack">full channel →</a>
+    </div>
+
+    <div class="entry">
+      <span class="refdes">U-0127</span>
+      <div>
+        <h3>HackerBox 0127: Sea Five</h3>
+        <p>Dual ESP32-C5 wardriving kit. Custom WiGLE-compliant firmware, BLE scanning, GPS stamping.</p>
+        <span class="tag">in progress</span>
+      </div>
+      <span class="date">2026</span>
+    </div>
+
+    <div class="entry">
+      <span class="refdes">U-HMD</span>
+      <div>
+        <h3>The Last Hand-Me-Down</h3>
+        <p>A 13-year hardware hand-me-down chain, ending with a $55 AliExpress Xeon build for Leo.</p>
+        <span class="tag">in progress</span>
+      </div>
+      <span class="date">2026</span>
+    </div>
+
+    <div class="entry">
+      <span class="refdes">U-0126</span>
+      <div>
+        <h3>HackerBox 0126: Imitation Game</h3>
+        <p>Alan Turing-themed box. TuRING Machine and ESP32-S3 CAM builds.</p>
+        <span class="tag">shipped</span>
+      </div>
+      <span class="date">2026</span>
+    </div>
+
+    <div class="entry">
+      <span class="refdes">U-0125</span>
+      <div>
+        <h3>HackerBox 0125: Vitality</h3>
+        <p>Qi wireless power, wireless RGB LEDs, and an ESP32-C3 Mochi Digital Companion.</p>
+        <span class="tag">shipped</span>
+      </div>
+      <span class="date">2025</span>
+    </div>
+  </section>
+
+  <section id="about" class="about">
+    <div class="section-head">
+      <h2><span class="num">02</span>About This Bench</h2>
+    </div>
+    <p>I'm Jamie. Network guy by day, obsessive tinkerer all of the other times. This shop runs on HackerBox unboxings, retro computing rescues, ham radio, and whatever's smoking on the bench this week.</p>
+    <p>Got here on purpose or by accident? Either way, thanks for stopping by. Be excellent to each other. Hack on.</p>
+  </section>
+
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="ports">
+      <a class="port" href="https://www.youtube.com/@JamiesHackShack">YouTube</a>
+      <a class="port" href="https://jamies-hack-shack.myspreadshop.com/">Merch</a>
+      <a class="port" href="https://github.com/slofunk">GitHub</a>
+      <a class="port" href="https://bsky.app/profile/slofunk.bsky.social">Bluesky</a>
+      <a class="port" href="https://bitbang.social/slofunk">Mastodon</a>
+      <a class="port" href="https://twitter.com/slofunk">X / Twitter</a>
+    </div>
+    <p class="fine">© 2026 Jamie's Hack Shack. Best reached via DM on Bluesky, Mastodon, or X. Built with plain HTML: no build step, nothing to break.</p>
+  </div>
+</footer>
+
+</body>
+</html>
